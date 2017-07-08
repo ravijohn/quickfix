@@ -93,8 +93,9 @@ Session* SessionFactory::create( const SessionID& sessionID,
   UtcTimeOnly endTime;
   try
   {
-    startTime = UtcTimeOnlyConvertor::convert
-                ( settings.getString( START_TIME ) );
+    time_t t = time(0);
+    struct tm *now = gmtime(&t);
+    startTime = UtcTimeOnly(now->tm_hour, now->tm_min, now->tm_sec, 0);
     endTime = UtcTimeOnlyConvertor::convert
               ( settings.getString( END_TIME ) );
   }
