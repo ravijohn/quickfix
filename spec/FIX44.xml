@@ -1001,7 +1001,6 @@
    <component name='InstrmtStrkPxGrp' required='Y' />
    <component name='UndInstrmtStrkPxGrp' required='N' />
   </message>
-  <message name='XMLnonFIX' msgtype='n' msgcat='admin' />
   <message name='RegistrationInstructions' msgtype='o' msgcat='app'>
    <field name='RegistID' required='Y' />
    <field name='RegistTransType' required='Y' />
