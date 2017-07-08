@@ -291,12 +291,6 @@ throw( InvalidMessage )
 
     if ( isHeaderField( field, pSessionDataDictionary ) )
     {
-      if ( type != header )
-      {
-        if(m_tag == 0) m_tag = field.getTag();
-        m_validStructure = false;
-      }
-
       if ( field.getTag() == FIELD::MsgType )
         msg = field.getString();
 

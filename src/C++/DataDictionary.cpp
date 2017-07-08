@@ -164,8 +164,6 @@ void DataDictionary::iterate( const FieldMap& map, const MsgType& msgType ) cons
   for ( i = map.begin(); i != map.end(); ++i )
   {
     const FieldBase& field = i->second;
-    if( i != map.begin() && (field.getTag() == lastField) )
-      throw RepeatedTag( lastField );
     checkHasValue( field );
 
     if ( m_hasVersion )
