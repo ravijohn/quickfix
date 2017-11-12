@@ -444,7 +444,11 @@ private:
   throw( TagNotDefinedForMessage )
   {
     if ( !isMsgField( msgType, field.getTag() ) )
-      throw TagNotDefinedForMessage( field.getTag() );
+      std::cout << "WARN: TagNotDefinedForMessage"
+		<< " type=" << msgType
+		<< " tag=" << field.getTag()
+		<< std::endl;
+      // throw TagNotDefinedForMessage( field.getTag() );
   }
 
   /// Check if group count matches number of groups in
@@ -457,7 +461,9 @@ private:
     {
       if( (int)fieldMap.groupCount(fieldNum)
         != IntConvertor::convert(field.getString()) )
-      throw RepeatingGroupCountMismatch(fieldNum);
+      // throw RepeatingGroupCountMismatch(fieldNum);
+	std::cout << "WARN: Repeating group count mismatch fieldNum="
+		  << fieldNum << " field.getString()=" << field.getString() << std::endl;
     }
   }
 
@@ -489,7 +495,10 @@ private:
     for( iF = fields.begin(); iF != fields.end(); ++iF )
     {
       if( !body.isSetField(*iF) )
-        throw RequiredTagMissing( *iF );
+      {
+	if (*iF != 271) // quantity
+	  std::cout << "WARN: Missing " << *iF << std::endl
+      }
     }
 
     FieldMap::g_iterator groups;

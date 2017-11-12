@@ -1208,6 +1208,7 @@ void Session::next( const std::string& msg, const UtcTimeStamp& timeStamp, bool 
 void Session::next( const Message& message, const UtcTimeStamp& timeStamp, bool queued )
 {
   const Header& header = message.getHeader();
+  // std::cout << "received=" << message << std::cout;
 
   try
   {
@@ -1272,74 +1273,79 @@ void Session::next( const Message& message, const UtcTimeStamp& timeStamp, bool 
       m_state.incrNextTargetMsgSeqNum();
     }
   }
-  catch ( MessageParseError& e )
-  { m_state.onEvent( e.what() ); }
-  catch ( RequiredTagMissing & e )
-  { LOGEX( generateReject( message, SessionRejectReason_REQUIRED_TAG_MISSING, e.field ) ); }
-  catch ( FieldNotFound & e )
+  catch (const std::runtime_error &ex)
   {
-    if( header.getField(FIELD::BeginString) >= FIX::BeginString_FIX42 && message.isApp() )
-    {
-      LOGEX( generateBusinessReject( message, BusinessRejectReason_CONDITIONALLY_REQUIRED_FIELD_MISSING, e.field ) );
-    }
-    else
-    {
-      LOGEX( generateReject( message, SessionRejectReason_REQUIRED_TAG_MISSING, e.field ) );
-      if ( header.getField(FIELD::MsgType) == MsgType_Logon )
-      {
-        m_state.onEvent( "Required field missing from logon" );
-        disconnect();
-      }
-    }
+    std::cout << ex.what() << std::endl;
+    exit(42);
   }
-  catch ( InvalidTagNumber & e )
-  { LOGEX( generateReject( message, SessionRejectReason_INVALID_TAG_NUMBER, e.field ) ); }
-  catch ( NoTagValue & e )
-  { LOGEX( generateReject( message, SessionRejectReason_TAG_SPECIFIED_WITHOUT_A_VALUE, e.field ) ); }
-  catch ( TagNotDefinedForMessage & e )
-  { LOGEX( generateReject( message, SessionRejectReason_TAG_NOT_DEFINED_FOR_THIS_MESSAGE_TYPE, e.field ) ); }
-  catch ( InvalidMessageType& )
-  { LOGEX( generateReject( message, SessionRejectReason_INVALID_MSGTYPE ) ); }
-  catch ( UnsupportedMessageType& )
-  {
-    if ( header.getField(FIELD::BeginString) >= FIX::BeginString_FIX42 )
-      { LOGEX( generateBusinessReject( message, BusinessRejectReason_UNKNOWN_MESSAGE_TYPE ) ); }
-    else
-      { LOGEX( generateReject( message, "Unsupported message type" ) ); }
-  }
-  catch ( TagOutOfOrder & e )
-  { LOGEX( generateReject( message, SessionRejectReason_TAG_SPECIFIED_OUT_OF_REQUIRED_ORDER, e.field ) ); }
-  catch ( IncorrectDataFormat & e )
-  { LOGEX( generateReject( message, SessionRejectReason_INCORRECT_DATA_FORMAT_FOR_VALUE, e.field ) ); }
-  catch ( IncorrectTagValue & e )
-  { LOGEX( generateReject( message, SessionRejectReason_VALUE_IS_INCORRECT, e.field ) ); }
-  catch ( RepeatedTag & e )
-  { LOGEX( generateReject( message, SessionRejectReason_TAG_APPEARS_MORE_THAN_ONCE, e.field ) ); }
-  catch ( RepeatingGroupCountMismatch & e )
-  { LOGEX( generateReject( message, SessionRejectReason_INCORRECT_NUMINGROUP_COUNT_FOR_REPEATING_GROUP, e.field ) ); }
-  catch ( InvalidMessage& e )
-  { m_state.onEvent( e.what() ); }
-  catch ( RejectLogon& e )
-  {
-    m_state.onEvent( e.what() );
-    generateLogout( e.what() );
-    disconnect();
-  }
-  catch ( UnsupportedVersion& )
-  {
-    if ( header.getField(FIELD::MsgType) == MsgType_Logout )
-      nextLogout( message, timeStamp );
-    else
-    {
-      generateLogout( "Incorrect BeginString" );
-      m_state.incrNextTargetMsgSeqNum();
-    }
-  }
-  catch ( IOException& e )
-  {
-    m_state.onEvent( e.what() );
-    disconnect();
-  }
+  // catch ( MessageParseError& e )
+  // { m_state.onEvent( e.what() ); }
+  // catch ( RequiredTagMissing & e )
+  // { LOGEX( generateReject( message, SessionRejectReason_REQUIRED_TAG_MISSING, e.field ) ); }
+  // catch ( FieldNotFound & e )
+  // {
+  //   if( header.getField(FIELD::BeginString) >= FIX::BeginString_FIX42 && message.isApp() )
+  //   {
+  //     LOGEX( generateBusinessReject( message, BusinessRejectReason_CONDITIONALLY_REQUIRED_FIELD_MISSING, e.field ) );
+  //   }
+  //   else
+  //   {
+  //     LOGEX( generateReject( message, SessionRejectReason_REQUIRED_TAG_MISSING, e.field ) );
+  //     if ( header.getField(FIELD::MsgType) == MsgType_Logon )
+  //     {
+  //       m_state.onEvent( "Required field missing from logon" );
+  //       disconnect();
+  //     }
+  //   }
+  // }
+  // catch ( InvalidTagNumber & e )
+  // { LOGEX( generateReject( message, SessionRejectReason_INVALID_TAG_NUMBER, e.field ) ); }
+  // catch ( NoTagValue & e )
+  // { LOGEX( generateReject( message, SessionRejectReason_TAG_SPECIFIED_WITHOUT_A_VALUE, e.field ) ); }
+  // catch ( TagNotDefinedForMessage & e )
+  // { LOGEX( generateReject( message, SessionRejectReason_TAG_NOT_DEFINED_FOR_THIS_MESSAGE_TYPE, e.field ) ); }
+  // catch ( InvalidMessageType& )
+  // { LOGEX( generateReject( message, SessionRejectReason_INVALID_MSGTYPE ) ); }
+  // catch ( UnsupportedMessageType& )
+  // {
+  //   if ( header.getField(FIELD::BeginString) >= FIX::BeginString_FIX42 )
+  //     { LOGEX( generateBusinessReject( message, BusinessRejectReason_UNKNOWN_MESSAGE_TYPE ) ); }
+  //   else
+  //     { LOGEX( generateReject( message, "Unsupported message type" ) ); }
+  // }
+  // catch ( TagOutOfOrder & e )
+  // { LOGEX( generateReject( message, SessionRejectReason_TAG_SPECIFIED_OUT_OF_REQUIRED_ORDER, e.field ) ); }
+  // catch ( IncorrectDataFormat & e )
+  // { LOGEX( generateReject( message, SessionRejectReason_INCORRECT_DATA_FORMAT_FOR_VALUE, e.field ) ); }
+  // catch ( IncorrectTagValue & e )
+  // { LOGEX( generateReject( message, SessionRejectReason_VALUE_IS_INCORRECT, e.field ) ); }
+  // catch ( RepeatedTag & e )
+  // { LOGEX( generateReject( message, SessionRejectReason_TAG_APPEARS_MORE_THAN_ONCE, e.field ) ); }
+  // catch ( RepeatingGroupCountMismatch & e )
+  // { LOGEX( generateReject( message, SessionRejectReason_INCORRECT_NUMINGROUP_COUNT_FOR_REPEATING_GROUP, e.field ) ); }
+  // catch ( InvalidMessage& e )
+  // { m_state.onEvent( e.what() ); }
+  // catch ( RejectLogon& e )
+  // {
+  //   m_state.onEvent( e.what() );
+  //   generateLogout( e.what() );
+  //   disconnect();
+  // }
+  // catch ( UnsupportedVersion& )
+  // {
+  //   if ( header.getField(FIELD::MsgType) == MsgType_Logout )
+  //     nextLogout( message, timeStamp );
+  //   else
+  //   {
+  //     generateLogout( "Incorrect BeginString" );
+  //     m_state.incrNextTargetMsgSeqNum();
+  //   }
+  // }
+  // catch ( IOException& e )
+  // {
+  //   m_state.onEvent( e.what() );
+  //   disconnect();
+  // }
 
   if( !queued )
     nextQueued( timeStamp );

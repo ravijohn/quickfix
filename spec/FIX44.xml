@@ -784,6 +784,7 @@
    <component name='MDIncGrp' required='Y' />
    <field name='ApplQueueDepth' required='N' />
    <field name='ApplQueueResolution' required='N' />
+   <field name='Symbol' required='N' />
   </message>
   <message name='MarketDataRequestReject' msgtype='Y' msgcat='app'>
    <field name='MDReqID' required='Y' />
@@ -3017,9 +3018,9 @@
   <component name='MDFullGrp'>
    <group name='NoMDEntries' required='Y'>
     <field name='MDEntryType' required='Y' />
-    <field name='MDEntryPx' required='N' />
+    <field name='MDEntryPx' required='Y' />
     <field name='Currency' required='N' />
-    <field name='MDEntrySize' required='N' />
+    <field name='MDEntrySize' required='Y' />
     <field name='MDEntryDate' required='N' />
     <field name='MDEntryTime' required='N' />
     <field name='TickDirection' required='N' />
@@ -3055,7 +3056,7 @@
    <group name='NoMDEntries' required='Y'>
     <field name='MDUpdateAction' required='Y' />
     <field name='DeleteReason' required='N' />
-    <field name='MDEntryType' required='N' />
+    <field name='MDEntryType' required='Y' />
     <field name='MDEntryID' required='N' />
     <field name='MDEntryRefID' required='N' />
     <component name='Instrument' required='N' />
@@ -3063,9 +3064,9 @@
     <component name='InstrmtLegGrp' required='N' />
     <field name='FinancialStatus' required='N' />
     <field name='CorporateAction' required='N' />
-    <field name='MDEntryPx' required='N' />
+    <field name='MDEntryPx' required='Y' />
     <field name='Currency' required='N' />
-    <field name='MDEntrySize' required='N' />
+    <field name='MDEntrySize' required='Y' />
     <field name='MDEntryDate' required='N' />
     <field name='MDEntryTime' required='N' />
     <field name='TickDirection' required='N' />

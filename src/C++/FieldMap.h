@@ -129,7 +129,11 @@ public:
   {
     Fields::const_iterator iter = m_fields.find( tag );
     if ( iter == m_fields.end() )
-      throw FieldNotFound( tag );
+      {
+	if (tag != 271) // quantity
+	  std::cout << "Could not find tag " << tag << std::endl << std::flush;
+	return fieldZero_;
+      }
     return iter->second;
   }
 
@@ -219,6 +223,7 @@ public:
 private:
   Fields m_fields;
   Groups m_groups;
+  const FieldBase fieldZero_ = IntField(0);
 };
 /*! @} */
 }
