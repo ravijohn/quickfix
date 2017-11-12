@@ -497,7 +497,7 @@ private:
       if( !body.isSetField(*iF) )
       {
 	if (*iF != 271) // quantity
-	  std::cout << "WARN: Missing " << *iF << std::endl
+	  std::cout << "WARN: Missing " << *iF << std::endl;
       }
     }
 
